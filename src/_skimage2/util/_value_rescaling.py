@@ -75,7 +75,8 @@ def rescale_minmax(image):
     assert lower < higher
 
     # Actual normalization
-    with np.errstate(all="raise"):
+    # Ignore underflow errors while continuing to raise exceptions for overflow
+    with np.errstate(over = "raise" , under = "ignore"): 
         try:
             peak_to_peak = higher - lower
             out -= lower
