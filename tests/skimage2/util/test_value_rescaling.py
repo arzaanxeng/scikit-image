@@ -81,6 +81,13 @@ class TestRescaleMinmax:
         assert result.dtype == expected_dtype
         np.testing.assert_equal(result, expected)
 
+    @pytest.mark.parametrize("dtype", [np.float32, np.float64])
+    def test_extreme_range_no_underflow_error(self, dtype):
+        info = np.finfo(dtype)
+        image = np.array([0, info.tiny, info.max / 2], dtype=dtype)
+        out = rescale_minmax(image)
+        np.testing.assert_array_equal(out, [0, 0, 1])
+
     @pytest.mark.parametrize("dtype", float_dtypes)
     def test_nan(self, dtype):
         image = np.array([np.nan, -1, 0, 1], dtype=dtype)
